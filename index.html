@@ -24,9 +24,8 @@
                 <span class="navbar-toggler-icon"></span>
             </button> -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon initial-humburger"></span>
+            <span class="navbar-toggler-icon initial-hamburger"></span>
             </button>
-
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
@@ -313,22 +312,35 @@
         };
 
         // Function to check screen size and apply the 'to-close' class
-        function checkScreenSize() {
-            const navbarTogglerIcon = document.querySelector('.navbar-toggler-icon.initial-humburger');
-            if (window.innerWidth <= 767.98) {
-                // If screen size is small, add the class
-                navbarTogglerIcon.classList.add('to-close');
-            } else {
-                // If screen size is large, remove the class
-                navbarTogglerIcon.classList.remove('to-close');
-            }
+    function checkScreenSize() {
+        console.log("checkScreenSize() called"); // Debugging: Check if function is called
+
+        const navbarTogglerIcon = document.querySelector('.navbar-toggler-icon.initial-hamburger');
+
+        if (!navbarTogglerIcon) {
+            console.error("Navbar toggler icon not found!"); // Debugging: Check if element is found
+            return; // Exit if element is not found
         }
 
-        // Call the function on page load
-        window.addEventListener('load', checkScreenSize);
+        if (window.innerWidth <= 767.98) {
+            console.log("Screen size is small"); // Debugging
+            navbarTogglerIcon.classList.add('to-close');
+        } else {
+            console.log("Screen size is large"); // Debugging
+            navbarTogglerIcon.classList.remove('to-close');
+        }
 
-        // Call the function on window resize
-        window.addEventListener('resize', checkScreenSize);
+        // Force a re-evaluation (trigger reflow)
+        void navbarTogglerIcon.offsetWidth;
+    }
 
+    // Delay the execution of checkScreenSize() until after the page has loaded AND the DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(checkScreenSize, 100); // Delay by 100 milliseconds
+    });
 
+    // Call the function on window resize
+    window.addEventListener('resize', checkScreenSize);
     </script>
+</body>
+</html>
