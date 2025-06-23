@@ -164,7 +164,7 @@
 
             imageChange = changeImage();
             scrollingText.textContent = textArray[imageChange];
-
+            console.log('***ads*** ',scrollingText.textContent)
             // Start scrolling
             setupText(textArray[imageChange]);
 
