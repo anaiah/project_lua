@@ -1,6 +1,6 @@
 body {
     padding-top: 75px !important; /* Adjust as needed */
-}
+} 
 .fade-in { 
     opacity: 0;
     transition: opacity 1s ease-in, transform 1s ease-out;
