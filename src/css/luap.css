@@ -1,0 +1,166 @@
+.fade-in {
+    opacity: 0;
+    transition: opacity 1s ease-in, transform 1s ease-out;
+    transform: translateY(20px);
+}
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+#hero {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+#hero video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease-out;
+}
+.hero-content {
+    position: relative;
+    z-index: 1;
+    color: #333; /* set the text color here */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+.hero-content.text-dark {
+    color: #333; /* or any other dark color you prefer */
+}
+.parallax {
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Custom Navbar Styles */
+.navbar-gradient {
+    background: linear-gradient(to left, #284b6f, #061f39) !important; /* Blue gradient */
+    color: white !important; /* Optional: Adjust text color for better contrast */
+}
+
+.navbar-gradient .navbar-brand,
+.navbar-gradient .nav-link {
+    color: white !important; /* Ensure text is white on gradient */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.padded-section {
+  padding: 15px; /* Adjust the value as needed */
+}
+
+
+/* MISSION VISSION */
+/* General Styling */
+/* Section with Gradient Background */
+#mission-vision-values {
+    background: linear-gradient(to right, #a8d0e6, #a8e6a8, #e6d0a8); /* Multiple Colors */
+    padding: 20px;
+    color: #333; /* Dark text for contrast */
+}
+
+#mission-vision-values .display-4 {
+    font-size: 3rem; /* Larger "About Us" text */
+    font-weight: 700; /* Bolder "About Us" text */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+#mission-vision-values .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+#mission-vision-values .card {
+    transition: transform 0.3s ease-in-out;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.8); /* Add slight transparency to cards */
+}
+
+#mission-vision-values .card:hover {
+    transform: scale(1.05);
+}
+
+/* Card Title Styles */
+#mission-vision-values .card-title {
+    color: #333; /* Keep card title dark */
+}
+/* About Us Section */
+/* #about {
+    background-color: #f8f9fa
+} 
+
+*/
+
+#about {
+    background: linear-gradient(to right, #448dd6, #082c52); /* Blue gradient */
+    color: white; /* Optional: Adjust text color for better contrast */
+    padding:5px; /* Optional: Add padding for spacing */
+}
+
+
+#about .container {
+    /* max-width: 800px; Wider container */
+}
+
+#about .display-4 {
+    font-size: 3rem; /* Larger "About Us" text */
+    font-weight: 700; /* Bolder "About Us" text */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+#about .card-title {
+    font-size: 1.8rem; /* Larger card title */
+    color:#333;
+}
+
+#about .card-text {
+    font-size: 1.2rem; /* Larger card text */
+    color:#333;
+}
+
+#about .image-text-container {
+    overflow: hidden; /* Contains floats */
+}
+
+#about .image-wrapper {
+    float: left;
+    width: 50%; /* Adjust as needed */
+    margin-right: 1rem;
+    margin-bottom: 0.5rem; /* Space below the image */
+}
+
+#about .text-wrapper {
+    /* Nothing here */
+}
+
+#about .ximg {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Remove any potential inline spacing */
+}
+
+#about .yimg {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Remove any potential inline spacing */
+}
+
+/* Mobile Styles */
+@media (max-width: 767.98px) {
+    #about .image-wrapper {
+        float: none; /* Remove float on mobile */
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+}

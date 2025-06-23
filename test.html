@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Luap</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- AOS CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <style>
+    /* Parallax Effect on sections */
+    section {
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    /* Optional: add background images for each section */
+    #header-section {
+      background-image: url('your-background-image.jpg');
+    }
+
+    #about {
+      background-image: url('your-background-image-2.jpg');
+    }
+
+    /* Ensure content background is semi-transparent if needed */
+    .content-wrapper {
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1st Section: Header / Jumbotron -->
+  <section id="header-section" class="py-5 d-flex align-items-center" data-aos="fade-up" data-aos-duration="1000">
+    <div class="container text-center">
+      <h1 class="mb-4">Welcome to Project Luap</h1>
+      <!-- Video with rounded edges -->
+      <div class="ratio ratio-16x9 mx-auto" style="max-width: 800px;">
+        <video class="rounded-3" controls autoplay loop muted>
+          <source src="your-video-url.mp4" type="video/mp4" />
+          Your browser does not support HTML5 video.
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2nd Section: About -->
+  <section id="about" class="py-5" data-aos="fade-in" data-aos-duration="1000">
+    <div class="container content-wrapper">
+      <h2>About Project Luap</h2>
+      <p class="lead">
+        This section provides an overview of the project, its goals, and interesting details about the initiatives.
+      </p>
+    </div>
+  </section>
+
+  <!-- Initialize AOS -->
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      once: true, // Whether animation should happen only once - while scrolling down
+    });
+  </script>
+
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
