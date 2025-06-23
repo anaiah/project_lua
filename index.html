@@ -244,6 +244,7 @@
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         });
+
         document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
         // Dynamic testimonial cards
@@ -267,8 +268,10 @@
                     </div>
                 </div>
             `;
-            testimonialContainer.appendChild(card);
-            observer.observe(card);
+           
+           
+            //testimonialContainer.appendChild(card);
+            //observer.observe(card);
         });
 
         // ... (keep the fade-in effect and testimonial code as is)
