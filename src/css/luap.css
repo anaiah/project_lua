@@ -217,3 +217,19 @@ body {
 #social-links .social-icon.instagram { color: #e4405f; }
 #social-links .social-icon.facebook { color: #1877f2; }
 #social-links .social-icon.email { color: #4CAF50; }
+
+/* Customize the default hamburger icon */
+.navbar-toggler {
+  border-color: #FFDA63 !important; /* Yellow border */
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 218, 99, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+   width: 2em; /* Adjust size */
+    height: 2em;
+}
+
+/* Change the icon when the navbar is expanded */
+.navbar-toggler:not(.collapsed) .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 218, 99, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M6 6l18 18M6 24L24 6'/%3e%3c/svg%3e") !important; /* Change to close icon */
+}
