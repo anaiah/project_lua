@@ -273,8 +273,8 @@ body {
 /* For modal box */
 /* Background and container */
 .modal-content {
-  background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
-  border-radius: 15px;
+  /* background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%); */
+  border-radius: 5px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -292,9 +292,11 @@ body {
 }
 
 .modal-title {
-  font-family: 'Poppins', sans-serif;
+  /* font-family: 'Poppins', sans-serif; */
   font-size: 2rem;
-  color: #fff;
+  font-weight:700;
+  color: #2a2929;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
   letter-spacing: 2px;
   animation: bounceInDown 1s;
 }
@@ -313,10 +315,11 @@ body {
 
 /* Inputs style */
 .form-control {
-  background: rgba(255,255,255,0.8);
-  border: none;
+  /* background: rgba(240, 96, 96, 0.8); */
+  /* border: none; */
+  border-color: #082c52;
   padding: 12px 20px;
-  border-radius: 25px;
+  border-radius: 15px;
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   transition: all 0.3s ease;
@@ -330,9 +333,11 @@ body {
 
 /* Dropdown and textarea style */
 .form-select, textarea {
-  background: rgba(255,255,255,0.8);
-  border-radius: 25px;
-  border: none;
+  /* background: rgba(255,255,255,0.8); */
+  border-color: #082c52;
+  
+  border-radius: 15px;
+  /* border: none; */
   padding: 12px 20px;
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
