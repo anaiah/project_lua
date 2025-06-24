@@ -124,7 +124,7 @@ body {
 */
 
 #about {
-    background: linear-gradient(to right, #448dd6, #082c52); /* Blue gradient */
+    background: linear-gradient(to top right, #448dd6, #082c52); /* Blue gradient */
     color: white; /* Optional: Adjust text color for better contrast */
     padding:5px; /* Optional: Add padding for spacing */
 }
@@ -192,6 +192,10 @@ body {
     padding: 40px 0;
 }
 
+#social-links h4{
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
 #social-links .social-icon {
     display: inline-flex;
     align-items: center;
@@ -233,8 +237,6 @@ body {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 218, 99, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M6 6l18 18M6 24L24 6'/%3e%3c/svg%3e") !important; /* Change to close icon */
 }
 
-
-
 /* scrolling ads */
 #scrolling-container {
   width: 100%;
@@ -266,6 +268,96 @@ body {
 .fade-out {
     opacity: 0;
     transition: opacity 2s ease-in-out;
+}
+
+/* For modal box */
+/* Background and container */
+.modal-content {
+  background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+/* Header style */
+.modal-header {
+  border-bottom: none;
+  justify-content: center;
+  position: relative;
+}
+
+.modal-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  color: #fff;
+  letter-spacing: 2px;
+  animation: bounceInDown 1s;
+}
+
+/* Submit buttons with hover glow effect */
+.btn-primary, .btn-success {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-success:hover {
+  box-shadow: 0 0 20px #fff, 0 0 40px #39d2b4;
+  transform: scale(1.05);
+}
+
+/* Inputs style */
+.form-control {
+  background: rgba(255,255,255,0.8);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  box-shadow: 0 0 15px #39d2b4;
+  background: #fff;
+}
+
+/* Dropdown and textarea style */
+.form-select, textarea {
+  background: rgba(255,255,255,0.8);
+  border-radius: 25px;
+  border: none;
+  padding: 12px 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+}
+
+/* Animated underline */
+@keyframes bounceInDown {
+  0% { opacity: 0; transform: translateY(-50px); }
+  50% { opacity: 1; transform: translateY(10px); }
+  100% { transform: translateY(0); }
+}
+
+/* Additional glow effect for buttons */
+.btn-primary:after, .btn-success:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 25px;
+  box-shadow: 0 0 20px, inset 0 0 10px rgba(255,255,255,0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.btn-primary:hover:after, .btn-success:hover:after {
+  opacity: 1;
 }
 
 /* Alignment of Building.... */
