@@ -173,16 +173,19 @@
         db: window.localStorage,
 
         memberDetect:()=>{
+            //off keyboard cofig
+            const configObj = { keyboard: false, backdrop:'static' }
+		
             if( ! util.db.getItem('profile')){
                 
                 //util.Toasted(`You are NOT yet Registered, pls register!`,4000,false);
                 util.speaks("YOU are not yet Registered, kindly register!!!")
 
-                var regModal = new bootstrap.Modal(document.getElementById('registerModal'));
+                var regModal = new bootstrap.Modal(document.getElementById('registerModal'), configObj);
                 regModal.show();
 
             }else{
-                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), configObj);
                 loginModal.show();
             }
 
@@ -267,7 +270,125 @@
             })///=====end loop form to get elements	
         },
 
+        
+        //==========WHEN SUBMIT BUTTON CLICKED ==================
+        validateMe: async (frmModal, frm, classX)=>{
+            console.log('validateMe()===', frmModal, frm)
+            
+            const forms = document.querySelectorAll(frm)
+            const form = forms[0]
+            let xmsg
 
+            let aValid=[]
+            
+            Array.from(form.elements).forEach((input) => {
+                
+                if(input.classList.contains(classX)){
+                    aValid.push(input.checkValidity())
+                    if(input.checkValidity()===false){
+                        console.log('invalid ',input)
+                        
+                        input.classList.add('is-invalid')
+                    }else{
+                    input.classList.add('is-valid')
+                    }
+                }
+            })
+
+            if(aValid.includes(false)){
+                util.Toasted('Error, Please CHECK Your Entry, ERROR FIELDS MARKED IN RED!',3000,false)
+                console.log('don\'t post')
+                return false
+            }else{
+                
+                //getform data for posting
+                const mydata = document.getElementById(frm.replace('#',''))
+                let formdata = new FormData(mydata)
+                let objfrm = {}
+                
+                //// objfrm.grp_id="1" <-- if u want additional key value
+                
+                for (var key of formdata.keys()) {
+                    if(key=="pw2"){
+                        //console.log('dont add',key)
+                    }else{
+                    objfrm[key] = formdata.get(key);
+                    
+                    }
+                }
+                
+                //objfrm.date_reg = util.getDate()
+
+                //console.log('post this',frm,objfrm)
+
+                //=== POST NA!!!
+                switch(frm){ 
+                    case '#loginForm':
+                        xmsg = "<div><i class='fa fa-spinner fa-pulse' ></i>  Searching Database please wait...</div>"
+                        util.alertMsg( xmsg,'danger','loginPlaceHolder')
+
+                        util.url = `${myIp}/loginpost/${objfrm.uid}/${objfrm.pwd}`
+                        
+                        util.loginPost(frm ,frmModal,`${util.url}`)
+
+                    break
+                    
+                   
+                    case "#registerForm":
+                         ///asn.saveToLogin(`${myIp}/savetologin/${util.getCookie('f_id')}`,objfrm)
+                        console.log('SAVING..')
+                        console.log('post this',frm,objfrm)
+
+                    break
+
+                }//end switch
+
+                return
+
+            }//endif
+        },
+
+        //paygcash
+        paygcash:(eventname,member,amount)=>{
+            console.log( `for ${eventname},${member},${amount}`)
+
+            let obj = { data:{ attributes: {}}}
+
+            obj.data.attributes.amount = parseFloat(amount)
+
+            obj.data.attributes.description = `${eventname} ${member} `
+            const  secretKey = 'sk_live_qDxLrkacVKV2tTYtzaGaoA2c'
+            const options = {
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'Content-type': 'application/json',
+                    'Authorization': 'Basic ' + btoa(secretKey + ':'),
+                },
+                body: JSON.stringify(obj)
+            }
+
+
+            fetch('https://api.paymongo.com/v1/links', options)
+            .then( (response) => {
+                return response.json() // if the response is a JSON object
+            })
+            .then( (data) =>{
+                console.log( 'fetch data',data )
+                //zonked.gcashdata = data
+                
+                //util.modalShow( 'gcashmodal')
+                window.location.href = data.data.attributes.checkout_url
+                return true
+
+            })
+            // Handle the success response object
+            .catch( (error) => {
+                console.log(error) // Handle the error response object
+            });
+        },//==== end paygcash =====
+
+        //instantiate
         init:()=>{
             console.log('speaking')
             util.speaks('Welcome to LUAP Web apps!!!')
@@ -275,6 +396,20 @@
             //form validate
             util.loadFormValidation('#registerForm')
             util.loadFormValidation('#loginForm')
+
+            //off keyboard cofig
+            const configObj = { keyboard: false, backdrop:'static' }
+		
+            // Attach click events to all event images
+            document.querySelectorAll('.event-img').forEach(img => {
+                img.addEventListener('click', function() {
+                const largeSrc = this.getAttribute('data-large');
+                document.getElementById('modalImage').src = largeSrc;
+                const modal = new bootstrap.Modal(document.getElementById('imageModal'), configObj);
+                modal.show();
+                });
+            });
+
         },
 
     }; //end obj
