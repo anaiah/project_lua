@@ -348,37 +348,46 @@
             }//endif
         },
 
+        mongoModal : null,
+        mongoURL:'',
+        mongoRefNo:'',
         //paygcash
         paygcash:(eventname,member,amount)=>{
             console.log( `for ${eventname},${member},${amount}`)
 
-            let obj = { data:{ attributes: {}}}
+            let obj = {}
 
-            obj.data.attributes.amount = parseFloat(amount)
+            obj.amount = parseFloat(amount)
 
-            obj.data.attributes.description = `${eventname} ${member} `
-            const  secretKey = 'sk_live_qDxLrkacVKV2tTYtzaGaoA2c'
+            obj.description = `${eventname} ${member} `
+
             const options = {
                 method: 'POST',
                 headers: {
-                    'accept': 'application/json',
                     'Content-type': 'application/json',
-                    'Authorization': 'Basic ' + btoa(secretKey + ':'),
                 },
                 body: JSON.stringify(obj)
             }
 
+            //const myIp = "https://asn-jtgrp-api.onrender.com" 
+            const myIp = "http://192.168.43.221:10000"
 
-            fetch('https://api.paymongo.com/v1/links', options)
-            .then( (response) => {
-                return response.json() // if the response is a JSON object
-            })
-            .then( (data) =>{
+            fetch(`${myIp}/luap/pay`, options)
+            .then( response => response.json()) // if the response is a JSON object
+            .then( data => {
                 console.log( 'fetch data',data )
                 //zonked.gcashdata = data
                 
                 //util.modalShow( 'gcashmodal')
-                window.location.href = data.data.attributes.checkout_url
+                //window.location.href = data.data.attributes.checkout_url
+                util.mongoURL = data.data.attributes.checkout_url
+                util.mongoRefNo = data.data.attributes.reference_number
+
+                
+                util.mongoModal = new bootstrap.Modal(document.getElementById('gcashmodal'),  { keyboard: false, backdrop:'static' })
+
+                util.mongoModal.show();
+
                 return true
 
             })
@@ -387,6 +396,95 @@
                 console.log(error) // Handle the error response object
             });
         },//==== end paygcash =====
+
+        //checkpayment
+        checkPayment:async()=>{
+
+            let obj = {}
+            obj.refno = util.mongoRefNo
+            
+            //const myIp = "https://asn-jtgrp-api.onrender.com" 
+            const myIp = "http://192.168.43.221:10000"
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                },
+                body: JSON.stringify(obj)
+            }
+
+            await fetch(`${myIp}/luap/payref`,options)
+            .then( (response) => {
+                return response.json() // if the response is a JSON object
+            })
+            .then( (data) =>{
+
+                switch(data.xdata.status.toUpperCase()){
+                    case "UNPAID":
+                        Toastify({
+                            text: `PLS CHECK AGAIN, SERVER UPDATE TAKES A WHILE \n OR YOU'RE NOT DONE YET WITH PAYMENT PROCESS!`,
+                            duration:6000,
+                            close:false,
+                            position:'center',
+                            offset:{
+                                x: 0,
+                                y:100//window.innerHeight/2 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                            },
+                            style: {
+                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                            }
+                        }).showToast();
+                        return false
+
+                        break     
+                    
+                    case "PAID":
+                        // console.log('disabling btn')
+                        // document.getElementById(`call-btn-${zonked.refnobtnidx}`).disabled = false
+                        // document.getElementById(`gcash-btn-${zonked.refnobtnidx}`).disabled = true
+                        // document.getElementById(`gcash-btn-${zonked.btnidx}`).innerHTML='<i class="fa fa-thumbs-up"></i>&nbsp;PAID!'
+                        
+                        // const closebtn = document.getElementById('close-btn')
+                        // closebtn.classList.remove('hide-me')
+                        // closebtn.disabled = false
+
+
+                        // const checkbtn = document.getElementById('check-btn')
+                        // checkbtn.classList.add('hide-me')
+                        // checkbtn.disabled = true
+        
+                        break;    
+                }//endsw
+                
+                Toastify({
+                    text: `PAYMENT STATUS: "${data.xdata.status.toUpperCase()}"`,
+                    duration:3000,
+                    close:false,
+                    position:'center',
+                    offset:{
+                        x: 0,
+                        y:100//window.innerHeight/2 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                    },
+                    style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    }
+                }).showToast();
+            
+                
+                document.getElementById('gcash').src=''
+                util.mongoModal.hide()
+                
+            })
+            // Handle the success response object
+            .catch( (error) => {
+                console.log(error) // Handle the error response object
+            });
+            //zonked.getCalendar()
+            return true
+
+
+        },
 
         //instantiate
         init:()=>{
@@ -409,6 +507,9 @@
                 modal.show();
                 });
             });
+
+
+            
 
         },
 
@@ -435,6 +536,17 @@
         window.addEventListener('resize', util.checkScreenSize);    
         window.addEventListener('scroll', util.parallax);
 
-       
+        const modalEl = document.getElementById('gcashmodal');
+
+        // Attach event listener for after modal is shown
+        modalEl.addEventListener('shown.bs.modal', () => {
+            console.log('Modal is now visible!');
+            // Put your code here
+            const iframe = document.getElementById('gcash')
+
+            iframe.height=window.innerHeight - 160
+            iframe.src = util.mongoURL
+        });
+
     });
 

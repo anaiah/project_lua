@@ -394,6 +394,38 @@
     </div>
     </div>
 
+    <!--//gcash-->
+    <div class="modal fade" id="gcashmodal" name="gcashmodal" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="gcashmodalLabel">
+                    <img src="./src/img/logo.png" alt="Logo"  height="40">LUAP Payment</h5>
+                    
+                    <!-- <button type="button" class="close" onclick="console.log('hola')" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                -->
+                </div>
+                <div id='xbody' class="modal-body">
+                    <div class="container-fluid" >
+                        <div class="mt-0" id="gcash-info">
+                        <!-- put gcash info     -->
+                        <iframe id="gcash" name="gcash" height="100%" width="100%" src=""></iframe>
+                        </div>
+                    </div>
+                    <!-- endcontainer -->
+                </div>
+                <!-- end modalbody -->
+                <div class="modal-footer">
+                    <button type="button" id='check-btn' name='check-btn' onclick="javascript:util.checkPayment()" class="btn btn-primary"><i class="fa fa-check-square-o"></i>&nbsp;Check Payment</button>
+                    <button type="button" class="btn btn-secondary" id='close-btn' name='close-btn' data-bs-dismiss="modal" ><i class="fa fa-close"></i>&nbsp;Close</button>
+                </div> 
+            </div>
+            <!-- end  modalcontent -->
+        </div>        
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./src/js/luap.js?ver=12"></script>
 
