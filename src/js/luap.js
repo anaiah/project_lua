@@ -369,8 +369,8 @@
                 body: JSON.stringify(obj)
             }
 
-            //const myIp = "https://asn-jtgrp-api.onrender.com" 
-            const myIp = "http://192.168.43.221:10000"
+            const myIp = "https://asn-jtgrp-api.onrender.com" 
+            //const myIp = "http://192.168.43.221:10000"
 
             fetch(`${myIp}/luap/pay`, options)
             .then( response => response.json()) // if the response is a JSON object
@@ -403,8 +403,8 @@
             let obj = {}
             obj.refno = util.mongoRefNo
             
-            //const myIp = "https://asn-jtgrp-api.onrender.com" 
-            const myIp = "http://192.168.43.221:10000"
+            const myIp = "https://asn-jtgrp-api.onrender.com" 
+            //const myIp = "http://192.168.43.221:10000"
 
             const options = {
                 method: 'POST',
