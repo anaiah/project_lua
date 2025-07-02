@@ -674,7 +674,7 @@
 
                 } else if (data.type === 'payment.failed') {
                     alert('PAYMENT FAILED!!!')
-                }
+                } 
             });
 
             util.socket.on('connect', () => {
