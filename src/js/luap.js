@@ -631,7 +631,7 @@
             let authz = []
             authz.push(1)
             authz.push('CALOY TEST USER')
-        
+         
             console.log(authz[1])
 
             //==HANDSHAKE FIRST WITH SOCKET.IO
