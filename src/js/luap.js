@@ -571,7 +571,7 @@
         registerWebHook:async()=>{
 
             console.log('==RUNNING WEBHOOK')
-            const secretKey = 'sk_test_3ZwTCPvB3ZQmcHUybmvScoyG'
+            const secretKey = ''
 
             //const encodedKey = Buffer.from(secretKey + ':').toString('base64');
 
