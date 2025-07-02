@@ -160,7 +160,7 @@
 
             util.scrollingText.textContent = util.textArray[ util.imageChange];
             
-            console.log('***ads*** ',util.scrollingText.textContent)
+            ////console.log('***ads*** ',util.scrollingText.textContent)
             
             // Start scrolling
             util.setupText( util.textArray[util.imageChange]);
@@ -171,6 +171,23 @@
 
         //for localstorage
         db: window.localStorage,
+        
+        getMemberCode:() =>{
+
+            var today = new Date()
+            var dd = String(today.getDate()).padStart(2, '0')
+            var mm = String(today.getMonth() + 1).padStart(2, '0') //January is 0!
+            var yyyy = today.getFullYear()
+            var hh = String( today.getHours()).padStart(2,'0')
+            var mmm = String( today.getMinutes()).padStart(2,'0')
+            var ss = String( today.getSeconds()).padStart(2,'0')
+
+            today = `LUAP-${yyyy}${mm}${dd}${hh}${mmm}${ss}`
+            return today
+        },
+        
+        regModal:null,
+        profile:null,
 
         memberDetect:()=>{
             //off keyboard cofig
@@ -181,14 +198,60 @@
                 //util.Toasted(`You are NOT yet Registered, pls register!`,4000,false);
                 util.speaks("YOU are not yet Registered, kindly register!!!")
 
-                var regModal = new bootstrap.Modal(document.getElementById('registerModal'), configObj);
-                regModal.show();
+                util.regModal = new bootstrap.Modal(document.getElementById('registerModal'), configObj);
+                util.regModal.show();
+
+                document.getElementById('member_id').value = util.getMemberCode()
 
             }else{
-                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), configObj);
-                loginModal.show();
+                util.profile = JSON.parse( util.db.getItem('profile'))
+                util.speaks(`Welcome ${util.profile.fullname}`)
+
+                //var loginModal = new bootstrap.Modal(document.getElementById('loginModal'), configObj);
+                //loginModal.show();
             }
 
+        },
+
+        //===== SAVE MEMBERSHIP TO DB
+        //====rider  save transaction / save remittance
+        saveMember:async function(url="",xdata={}){
+
+            util.speaks('Saving Transaction to Database, Please Wait!!!')
+                                
+            await fetch(url,{
+                method:'POST',
+                cache:'reload',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                
+                body: JSON.stringify(xdata)
+            })
+            .then((response) => {  //promise... then 
+                return response.json();
+            })
+            .then( (data) => {
+ 
+                if(data.success=="ok"){
+                    util.speaks(('RECORD SUCCESSFULLY SAVED!!!'))
+                    util.Toasted('RECORD SUCCESSFULLY SAVED!!!',4000,false)
+                    util.regModal.hide()
+
+                    //create profile
+                    util.db.setItem('profile', JSON.stringify(xdata) )
+                
+
+                }else{
+                    util.speaks('DATABASE ERROR! PLEASE CHECK!')
+                }
+
+                
+            })  
+            .catch((error) => {
+                util.Toasted(`Error:, ${error}`,2000,false)
+                console.error('Error:', error)
+            })    
         },
         speaks:null,
 
@@ -205,7 +268,7 @@
                     y:100//window.innerHeight/2 // vertical axis - can be a number or a string indicating unity. eg: '2em'
                 },
                 style: {
-                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                    background: "linear-gradient(to right, #1a0003, #350408)"
                 }
             }).showToast();
         },
@@ -275,6 +338,8 @@
         validateMe: async (frmModal, frm, classX)=>{
             console.log('validateMe()===', frmModal, frm)
             
+            const myIp = "https:/luap-onrender.onrender.com" 
+            
             const forms = document.querySelectorAll(frm)
             const form = forms[0]
             let xmsg
@@ -297,7 +362,8 @@
 
             if(aValid.includes(false)){
                 util.Toasted('Error, Please CHECK Your Entry, ERROR FIELDS MARKED IN RED!',3000,false)
-                console.log('don\'t post')
+                util.speaks('Error!!! Please CHECK Your Entry, ERROR FIELDS MARKED IN RED!')
+                console.log(`====PLEASE DON'T POST!!!!===`)
                 return false
             }else{
                 
@@ -335,7 +401,7 @@
                     
                    
                     case "#registerForm":
-                         ///asn.saveToLogin(`${myIp}/savetologin/${util.getCookie('f_id')}`,objfrm)
+                        util.saveMember(`${myIp}/save/savemember`,objfrm)
                         console.log('SAVING..')
                         console.log('post this',frm,objfrm)
 
@@ -353,13 +419,27 @@
         mongoRefNo:'',
         //paygcash
         paygcash:(eventname,member,amount)=>{
-            console.log( `for ${eventname},${member},${amount}`)
+
+            if(!util.db.getItem('profile')){
+                util.speaks('YOU ARE NOT A MEMBER PLEASE REGISTER FIRST')
+                
+                //off keyboard cofig
+                const configObj = { keyboard: false, backdrop:'static' }
+		
+                util.regModal = new bootstrap.Modal(document.getElementById('registerModal'), configObj);
+                util.regModal.show();
+
+                return false;
+            }
+
+            const xname = JSON.parse( util.db.getItem('profile') )
+            console.log( `for ${eventname},${xname.fullname},${amount}`)
 
             let obj = {}
 
             obj.amount = parseFloat(amount)
 
-            obj.description = `${eventname} ${member} `
+            obj.description = `${eventname} for ${xname.fullname} `
 
             const options = {
                 method: 'POST',
@@ -369,7 +449,7 @@
                 body: JSON.stringify(obj)
             }
 
-            const myIp = "https://asn-jtgrp-api.onrender.com" 
+            const myIp = "https:/luap-onrender.onrender.com" 
             //const myIp = "http://192.168.43.221:10000"
 
             fetch(`${myIp}/luap/pay`, options)
@@ -380,7 +460,10 @@
                 
                 //util.modalShow( 'gcashmodal')
                 //window.location.href = data.data.attributes.checkout_url
+                
                 util.mongoURL = data.data.attributes.checkout_url
+                //util.mongoURL = "./checkout.html"
+                
                 util.mongoRefNo = data.data.attributes.reference_number
 
                 
@@ -432,7 +515,7 @@
                                 y:100//window.innerHeight/2 // vertical axis - can be a number or a string indicating unity. eg: '2em'
                             },
                             style: {
-                            background: "linear-gradient(to right, #00b09b, #96c93d)",
+                            background: "linear-gradient(to right, #1a0003, #350408)",
                             }
                         }).showToast();
                         return false
@@ -482,9 +565,45 @@
             });
             //zonked.getCalendar()
             return true
-
-
         },
+
+        //====RUN ONLYY  ONCE PER REGISTERD BUSINESS ACCOUNT OF PAYMONGO, 
+        registerWebHook:async()=>{
+
+            console.log('==RUNNING WEBHOOK')
+            const secretKey = 'sk_test_3ZwTCPvB3ZQmcHUybmvScoyG'
+
+            //const encodedKey = Buffer.from(secretKey + ':').toString('base64');
+
+            try {
+                const response = await fetch('https://api.paymongo.com/v1/webhooks', {
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'Authorization': 'Basic ' + btoa(secretKey + ':'),
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "data": {
+                        "attributes": {
+                            "url": "https://luap-onrender.onrender.com/luap/webhook",
+                            "events": [
+                                "payment.paid",
+                                "payment.failed"
+                            ]
+                        }
+                    }
+                })
+            });
+
+            const result = await response.json();
+            console.log('Webhook created:', result);
+            } catch (error) {
+            console.error('Error creating webhook:', error);
+            }
+       },
+       
+       socket:null,
 
         //instantiate
         init:()=>{
@@ -508,9 +627,67 @@
                 });
             });
 
+            //initialize node socket.io
+            let authz = []
+            authz.push(1)
+            authz.push('CALOY TEST USER')
+        
+            console.log(authz[1])
 
+            //==HANDSHAKE FIRST WITH SOCKET.IO
+            const userName = { token : authz[1] , mode: 1}//full name token
+
+            util.socket = io.connect(`https://luap-onrender.onrender.com`, {
+                //withCredentials: true,
+                transports: ['websocket', 'polling'], // Same as server
+                upgrade: true, // Ensure WebSocket upgrade is attempted
+                rememberTransport: false, //Don't keep transport after refresh
+                query:`userName=${JSON.stringify(userName)}`
+                // extraHeaders: {
+                //   "osndp-header": "osndp"
+                // }
+            });//========================initiate socket handshake ================
+
+            //socket.io listener
+            util.socket.on('payment_update', (data) => {
+                console.log('******Payment update received:****', data);
             
+                // Handle different webhook events
+                if (data.attributes.type === 'payment.paid') {
+                    Toastify({
+                        text: `PAYMENT STATUS: PAID!!!"`,
+                        duration:4000,
+                        close:false,
+                        position:'center',
+                        offset:{
+                            x: 0,
+                            y:100//window.innerHeight/2 // vertical axis - can be a number or a string indicating unity. eg: '2em'
+                        },
+                        style: {
+                        background: "linear-gradient(to right,rgb(0, 176, 155), #96c93d)",
+                        }
+                    }).showToast();
+                                   
+                    document.getElementById('gcash').src=''
+                    
+                    util.mongoModal.hide() 
 
+                } else if (data.type === 'payment.failed') {
+                    alert('PAYMENT FAILED!!!')
+                }
+            });
+
+            util.socket.on('connect', () => {
+                console.log('Connected to Socket.IO server using:', util.socket.io.engine.transport.name); // Check the transport
+            });
+
+            util.socket.on('disconnect', () => {
+                console.log('Disconnected from Socket.IO server');
+            });
+            ///done register  don't uncomment this  except for new
+            //paymongo account this is for LUAP-APP test paymongo
+            // util.registerWebHook()////
+           
         },
 
     }; //end obj

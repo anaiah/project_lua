@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom PayMongo Checkout</title>
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0066cc;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Payment Details</h2>
+        <div class="form-group">
+            <label for="name">Cardholder Name</label>
+            <input type="text" id="name" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="email@example.com">
+        </div>
+        <div class="form-group">
+            <label for="card-number">Card Number</label>
+            <input type="text" id="card-number" placeholder="4343 4343 4343 4343">
+        </div>
+        <div class="form-group">
+            <label for="exp-month">Expiration Month</label>
+            <input type="text" id="exp-month" placeholder="12">
+        </div>
+        <div class="form-group">
+            <label for="exp-year">Expiration Year</label>
+            <input type="text" id="exp-year" placeholder="2025">
+        </div>
+        <div class="form-group">
+            <label for="cvc">CVC</label>
+            <input type="text" id="cvc" placeholder="123">
+        </div>
+        <button id="pay-button">Pay Now</button>
+        <div id="payment-message"></div>
+    </div>
+
+    <script>
+        document.getElementById('pay-button').addEventListener('click', async function() {
+            const messageElement = document.getElementById('payment-message');
+            messageElement.textContent = 'Processing payment...';
+            
+            try {
+                // Step 1: Create a Payment Method
+                const paymentMethodResponse = await fetch('https://api.paymongo.com/v1/payment_methods', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa('pk_test_yourPublicKey:')
+                    },
+                    body: JSON.stringify({
+                        data: {
+                            attributes: {
+                                type: 'card',
+                                details: {
+                                    card_number: document.getElementById('card-number').value.replace(/\s/g, ''),
+                                    exp_month: parseInt(document.getElementById('exp-month').value),
+                                    exp_year: parseInt(document.getElementById('exp-year').value),
+                                    cvc: document.getElementById('cvc').value
+                                },
+                                billing: {
+                                    name: document.getElementById('name').value,
+                                    email: document.getElementById('email').value
+                                }
+                            }
+                        }
+                    })
+                });
+                
+                const paymentMethod = await paymentMethodResponse.json();
+                
+                // Step 2: Create a Payment Intent
+                const paymentIntentResponse = await fetch('https://api.paymongo.com/v1/payment_intents', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa('sk_test_yourSecretKey:')
+                    },
+                    body: JSON.stringify({
+                        data: {
+                            attributes: {
+                                amount: 10000, // Amount in smallest currency unit (e.g., 100.00 PHP = 10000)
+                                payment_method_allowed: ['card'],
+                                payment_method_options: {
+                                    card: {
+                                        request_three_d_secure: 'any'
+                                    }
+                                },
+                                currency: 'PHP',
+                                description: 'Payment for Product/Service'
+                            }
+                        }
+                    })
+                });
+                
+                const paymentIntent = await paymentIntentResponse.json();
+                
+                // Step 3: Attach Payment Method to Payment Intent
+                const attachResponse = await fetch(`https://api.paymongo.com/v1/payment_intents/${paymentIntent.data.id}/attach`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa('sk_test_yourSecretKey:')
+                    },
+                    body: JSON.stringify({
+                        data: {
+                            attributes: {
+                                payment_method: paymentMethod.data.id,
+                                return_url: 'https://yourwebsite.com/success'
+                            }
+                        }
+                    })
+                });
+                
+                const attachResult = await attachResponse.json();
+                
+                // Step 4: Handle the result
+                if (attachResult.data.attributes.status === 'succeeded') {
+                    messageElement.textContent = 'Payment successful!';
+                } else if (attachResult.data.attributes.status === 'awaiting_next_action') {
+                    // Redirect to 3DS authentication if needed
+                    window.location.href = attachResult.data.attributes.next_action.redirect.url;
+                } else {
+                    messageElement.textContent = 'Payment processing. Check status later.';
+                }
+                
+            } catch (error) {
+                messageElement.textContent = 'Payment failed: ' + error.message;
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
