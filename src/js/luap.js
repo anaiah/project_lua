@@ -610,6 +610,8 @@
             console.log('speaking')
             util.speaks('Welcome to LUAP Web apps!!!')
 
+            const myIp = "https://luap-onrender..onrender.com" 
+            
             //form validate
             util.loadFormValidation('#registerForm')
             util.loadFormValidation('#loginForm')
